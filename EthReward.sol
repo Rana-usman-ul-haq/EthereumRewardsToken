@@ -397,7 +397,7 @@ contract PulseEtherRain is Context, IERC20, Ownable {
         _rOwned[_msgSender()] = _tTotal;
         marketingwallet = 0x3BB222C56357967F1DE15D74C21B6f3059Ef3dBb;
         submarketingWallet= 0xfcBD44159D0AC7b8d15c46476FDfEE75b47f285F;
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
         //CREATE A UNISWAP PAIR FOR THIS NEW TOKEN
         uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory()).createPair(address(this), _uniswapV2Router.WETH());
         //SET THE REST OF THE CONTRACT VARIABLES
