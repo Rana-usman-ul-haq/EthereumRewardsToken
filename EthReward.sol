@@ -358,11 +358,11 @@ contract PulseEtherRain is Context, IERC20, Ownable {
     uint256 private _totalBurnt;
     uint256 private _totalRewardCollected; 
     uint256 private _totalMarketingCollected;
-    uint256 public _TaxFee = 5;
+    uint256 public _TaxFee = 0;
     uint256 private _previousTaxFee = _TaxFee;
     uint256 public _marketingPer = 0;
     uint256 public _autoBurnPer = 0;
-    uint256 public _RewardPer = 5;// ETH Reward FEE
+    uint256 public _RewardPer = 5;
     uint256 public _subMarketingPer = 0;  
     address [] public tokenHolder;
     uint256 public numberOfTokenHolders = 0;
@@ -395,8 +395,8 @@ contract PulseEtherRain is Context, IERC20, Ownable {
 
     constructor () public {
         _rOwned[_msgSender()] = _tTotal;
-        marketingwallet = 0x31cECf36Ba7AF77faCA1B46174b5B0f7931037cF;
-        submarketingWallet= 0x048a9aC6883B31D1C8DBcF877469D068453915F7;
+        marketingwallet = 0x3BB222C56357967F1DE15D74C21B6f3059Ef3dBb;
+        submarketingWallet= 0xfcBD44159D0AC7b8d15c46476FDfEE75b47f285F;
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
         //CREATE A UNISWAP PAIR FOR THIS NEW TOKEN
         uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory()).createPair(address(this), _uniswapV2Router.WETH());
