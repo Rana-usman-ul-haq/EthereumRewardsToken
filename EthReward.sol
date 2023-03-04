@@ -361,7 +361,7 @@ contract PulseEtherRain is Context, IERC20, Ownable {
     uint256 public _TaxFee = 0;
     uint256 private _previousTaxFee = _TaxFee;
     uint256 public _marketingPer = 0;
-    uint256 public _autoBurnPer = 0;
+    uint256 public _autoBurnPer = 5;
     uint256 public _RewardPer = 5;
     uint256 public _subMarketingPer = 0;  
     address [] public tokenHolder;
@@ -539,10 +539,10 @@ contract PulseEtherRain is Context, IERC20, Ownable {
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "Transfer amount must be greater than zero");
-        if(to == uniswapV2Pair && from!=address(this)) {
-            require(amount <= _maxAntiWhaleLimits, "BEP20: Sell Qty Exceed !");
-            require(amount >= _minAntiWhaleLimits, "BEP20: Sell Qty Does Not Match !"); 
-            require(checkSellEligibility(from), "BEP20: Try After Sell Time Interval !"); 
+        if(to == uniswapV2Pair && from!=address(this) || from == uniswapV2Pair && to!=address(this)) {
+            require(amount <= _maxAntiWhaleLimits, "ERC20: Sell Qty Exceed !");
+            require(amount >= _minAntiWhaleLimits, "ERC20: Sell Qty Does Not Match !"); 
+            require(checkSellEligibility(from), "ERC20: Try After Sell Time Interval !"); 
         }
         // IS THE TOKEN BALANCE OF THIS CONTRACT ADDRESS OVER THE MIN NUMBER OF
         // TOKENS THAT WE NEED TO INITIATE A SWAP + LIQUIDITY LOCK?
