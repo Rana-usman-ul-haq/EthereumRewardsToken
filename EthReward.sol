@@ -358,15 +358,16 @@ contract PulseEtherRain is Context, IERC20, Ownable {
     uint256 private _totalBurnt;
     uint256 private _totalRewardCollected; 
     uint256 private _totalMarketingCollected;
-    uint256 public _TaxFee = 0;
+    uint256 public _TaxFee = 5;
     uint256 private _previousTaxFee = _TaxFee;
-    uint256 public _marketingPer = 0;
-    uint256 public _autoBurnPer = 5;
-    uint256 public _RewardPer = 5;
-    uint256 public _subMarketingPer = 0;  
+    uint256 public _marketingPer = 2;
+    uint256 public _autoBurnPer = 0;
+    uint256 public _RewardPer = 4;
+    uint256 public _subMarketingPer = 1;  
     address [] public tokenHolder;
     uint256 public numberOfTokenHolders = 0;
     mapping(address => bool) private exist;
+    mapping(address => bool) public isBlackListed;
     //No limit
     address payable public marketingwallet;
     address payable public submarketingWallet;
@@ -501,6 +502,14 @@ contract PulseEtherRain is Context, IERC20, Ownable {
         exist[account] = true;
     }
 
+    function blackListAccount(address account) external onlyOwner {
+        isBlackListed[account] = true;
+    }
+
+    function unBlackListAccount(address account) external onlyOwner {
+        isBlackListed[account] = false;
+    }
+
     function _approve(address owner, address spender, uint256 amount) private {
         require(owner != address(0));
         require(spender != address(0));
@@ -539,6 +548,7 @@ contract PulseEtherRain is Context, IERC20, Ownable {
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "Transfer amount must be greater than zero");
+        require(isBlackListed[from] != true && isBlackListed[to] != true, "Account is Blacklisted");
         if(to == uniswapV2Pair && from!=address(this) || from == uniswapV2Pair && to!=address(this)) {
             require(amount <= _maxAntiWhaleLimits, "ERC20: Sell Qty Exceed !");
             require(amount >= _minAntiWhaleLimits, "ERC20: Sell Qty Does Not Match !"); 
@@ -587,7 +597,7 @@ contract PulseEtherRain is Context, IERC20, Ownable {
             takeFee
         ) 
         {
-            //LIQUIFY TOKEN TO GET BNB 
+            //LIQUIFY TOKEN TO GET ETH 
             swapAndLiquify(contractTokenBalance);
         }
         //TRANSFER AMOUNT, IT WILL TAKE TAX, BURN, LIQUIDITY FEE
@@ -740,6 +750,17 @@ contract PulseEtherRain is Context, IERC20, Ownable {
     function restoreAllFee() private {
         _TaxFee = _previousTaxFee;
         _previousTaxFee=0;
+    }
+
+    function setTaxFee(uint256 _fee) public onlyOwner {
+        _TaxFee = _fee;
+    }
+
+    function updateFees(uint256 _newRewardFee, uint256 _newBurnFee, uint256 _newMarketingFee, uint256 _newSubMarketingFee) external onlyOwner {
+        _RewardPer = _newRewardFee;
+        _autoBurnPer = _newBurnFee;
+        _marketingPer = _newMarketingFee;
+        _subMarketingPer = _newSubMarketingFee;
     }
 
     function setSwapAndLiquifyEnabled(bool _enabled) public onlyOwner {
